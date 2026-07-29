@@ -1,0 +1,26 @@
+# Node & Build artifacts
+node_modules/
+dist/
+build/
+.db
+*.db
+*.db-journal
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Credentials & secrets
+credentials.json
+firebase-service-account.json
+
+# Maven / Spring Boot
+target/
+.mvn/
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

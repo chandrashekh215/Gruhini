@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased font-sans;
+  }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.gradient-saffron {
+  background: linear-gradient(135deg, #ff9933 0%, #d97706 100%);
+}
+
+.gradient-royal {
+  background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+}
