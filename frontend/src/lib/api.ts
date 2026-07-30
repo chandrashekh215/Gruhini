@@ -1,8 +1,27 @@
-const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const RENDER_BACKEND = 'https://gruhani-backend-ktro.onrender.com';
 
-const DEFAULT_BACKEND = isLocalhost ? 'http://localhost:5000' : 'https://gruhani-backend-ktro.onrender.com';
+function getApiBaseUrl(): string {
+  if (typeof window === 'undefined') {
+    return RENDER_BACKEND;
+  }
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || DEFAULT_BACKEND;
+  const hostname = window.location.hostname;
+  const isLocal = hostname === 'localhost' || hostname === '127.0.0.1';
+
+  if (isLocal) {
+    return (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:5000';
+  }
+
+  // On any production domain (Vercel, Netlify, Render, custom domains)
+  const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+    return envUrl;
+  }
+
+  return RENDER_BACKEND;
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('gruhini_token');
