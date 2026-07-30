@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { fetchApi } from '../lib/api';
-import { PlusCircle, Package, Check, X, ShieldAlert, KeyRound, Image as ImageIcon } from 'lucide-react';
 
 export const SellerDashboardPage: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -113,34 +112,34 @@ export const SellerDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      <div className="flex justify-between items-center">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12 pb-32">
+      <div className="border-b border-white/10 pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900">Home Chef Portal</h1>
-          <p className="text-slate-600 text-sm mt-1">Manage kitchen menu, orders, and delivery OTP verification</p>
+          <span className="text-coral font-bold text-xs uppercase tracking-[0.35em] block mb-2">MANAGEMENT PORTAL</span>
+          <h1 className="text-4xl font-black tracking-tighter text-white uppercase">HOME CHEF PORTAL</h1>
         </div>
 
-        <div className="flex space-x-2 bg-slate-100 p-1.5 rounded-xl border">
+        <div className="flex space-x-2 bg-surface-card p-2 rounded-2xl border border-white/10">
           <button
             onClick={() => setActiveTab('products')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'products' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'products' ? 'bg-white text-black shadow-lg' : 'text-neutral-400 hover:text-white'
             }`}
           >
             My Menu ({products.length})
           </button>
           <button
             onClick={() => setActiveTab('orders')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'orders' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'orders' ? 'bg-white text-black shadow-lg' : 'text-neutral-400 hover:text-white'
             }`}
           >
             Received Orders ({orders.length})
           </button>
           <button
             onClick={() => setActiveTab('add')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              activeTab === 'add' ? 'gradient-saffron text-white shadow-sm' : 'text-slate-600'
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+              activeTab === 'add' ? 'bg-coral text-white shadow-lg shadow-coral/20' : 'text-neutral-400 hover:text-white'
             }`}
           >
             + Add New Dish
@@ -149,22 +148,22 @@ export const SellerDashboardPage: React.FC = () => {
       </div>
 
       {activeTab === 'products' && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {products.map((p) => (
-            <div key={p.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <img src={p.image} alt={p.name} className="w-full h-40 object-cover rounded-lg bg-slate-100" />
+            <div key={p.id} className="bg-surface-card p-6 rounded-3xl border border-white/10 hover:border-white/20 transition-all space-y-4">
+              <img src={p.image} alt={p.name} className="w-full h-44 object-cover rounded-2xl bg-neutral-900 grayscale hover:grayscale-0 transition-all duration-300" />
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-slate-900">{p.name}</h3>
-                  <p className="text-xs text-slate-500 font-semibold">₹{p.price} • Stock: {p.stock}</p>
+                  <h3 className="font-bold text-white text-lg tracking-tight">{p.name}</h3>
+                  <p className="text-xs text-neutral-400 font-medium">₹{p.price} • Stock: {p.stock} units</p>
                 </div>
                 <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                  className={`text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border ${
                     p.status === 'APPROVED'
-                      ? 'bg-emerald-100 text-emerald-800'
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
                       : p.status === 'REJECTED'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-amber-100 text-amber-800'
+                      ? 'bg-red-500/10 text-red-400 border-red-500/30'
+                      : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
                   }`}
                 >
                   {p.status}
@@ -176,33 +175,35 @@ export const SellerDashboardPage: React.FC = () => {
       )}
 
       {activeTab === 'orders' && (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {orders.map((o) => (
-            <div key={o.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-              <div className="flex justify-between items-center">
+            <div key={o.id} className="bg-surface-card p-8 rounded-3xl border border-white/10 hover:border-white/20 transition-all space-y-4">
+              <div className="flex flex-wrap justify-between items-center gap-4">
                 <div>
-                  <span className="font-bold text-slate-900">Order #{o.id}</span>
-                  <span className="text-xs text-slate-500 block">Customer: {o.userDetails?.name} ({o.userDetails?.contact})</span>
+                  <span className="font-black text-white text-lg tracking-tight">Order #{o.id}</span>
+                  <span className="text-xs text-neutral-400 block font-medium mt-1">
+                    Customer: {o.userDetails?.name} ({o.userDetails?.contact})
+                  </span>
                 </div>
-                <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded">
+                <span className="text-xs font-bold text-coral bg-coral/10 border border-coral/30 px-3 py-1 rounded-md uppercase tracking-wider">
                   {o.orderStatus}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center pt-2 border-t text-sm font-bold">
-                <span>Value: ₹{o.orderValue}</span>
-                <div className="flex space-x-2">
+              <div className="flex flex-wrap justify-between items-center pt-4 border-t border-white/10 text-sm font-bold text-white gap-4">
+                <span className="text-xl font-black">Value: ₹{o.orderValue}</span>
+                <div className="flex flex-wrap items-center gap-3">
                   {o.orderStatus === 'PENDING' && (
                     <>
                       <button
                         onClick={() => acceptOrder(o.id)}
-                        className="bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-700"
+                        className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-extrabold uppercase tracking-wider px-4 py-2.5 rounded-xl shadow transition-all"
                       >
                         Accept Order
                       </button>
                       <button
                         onClick={() => rejectOrder(o.id)}
-                        className="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-red-700"
+                        className="bg-red-500 hover:bg-red-600 text-white text-xs font-extrabold uppercase tracking-wider px-4 py-2.5 rounded-xl shadow transition-all"
                       >
                         Reject Order
                       </button>
@@ -210,7 +211,7 @@ export const SellerDashboardPage: React.FC = () => {
                   )}
 
                   {o.orderStatus === 'ACCEPTED' && (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-3">
                       <input
                         type="text"
                         placeholder="Enter 6-digit OTP"
@@ -219,11 +220,11 @@ export const SellerDashboardPage: React.FC = () => {
                           setVerifyOrderId(o.id);
                           setOtpInput(e.target.value);
                         }}
-                        className="px-2 py-1 bg-slate-50 border text-xs rounded w-32"
+                        className="px-3 py-2 bg-neutral-900 border border-white/10 text-white text-xs rounded-xl w-36 focus:outline-none focus:border-coral"
                       />
                       <button
                         onClick={() => verifyOtp(o.id)}
-                        className="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700"
+                        className="bg-coral hover:bg-coral-hover text-white text-xs font-extrabold uppercase tracking-wider px-4 py-2.5 rounded-xl shadow transition-all"
                       >
                         Verify Delivery
                       </button>
@@ -237,39 +238,41 @@ export const SellerDashboardPage: React.FC = () => {
       )}
 
       {activeTab === 'add' && (
-        <form onSubmit={handleAddProduct} className="max-w-xl mx-auto bg-white p-6 rounded-2xl border border-slate-200 shadow-lg space-y-4 text-sm">
-          <h2 className="text-xl font-bold text-slate-900 border-b pb-2">Add New Homemade Dish</h2>
+        <form onSubmit={handleAddProduct} className="max-w-2xl mx-auto bg-surface-card p-8 sm:p-10 rounded-[2.5rem] border border-white/10 shadow-2xl space-y-6 text-xs font-medium">
+          <h2 className="text-2xl font-black text-white uppercase tracking-tight border-b border-white/10 pb-4">
+            Add New Homemade Dish
+          </h2>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Dish Name</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Dish Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="Suji Cake / Royal Thali"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Price (₹)</label>
+              <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Price (₹)</label>
               <input
                 type="number"
                 required
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border rounded-lg"
+                className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
                 placeholder="150"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+              <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border rounded-lg"
+                className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-coral transition-colors"
               >
                 <option value="THALI">Traditional Thali</option>
                 <option value="SWEETS">Sweets & Mithai</option>
@@ -281,29 +284,29 @@ export const SellerDashboardPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Description</label>
             <textarea
-              rows={2}
+              rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="Fresh semolina suji cake made with desi ghee and dry fruits..."
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Dish Image (Cloudinary Multipart Upload)</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Dish Image</label>
             <input
               type="file"
               accept="image/*"
               onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-              className="w-full px-3 py-2 bg-slate-50 border rounded-lg text-xs"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-coral file:text-white"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full gradient-saffron text-white font-bold py-2.5 rounded-xl shadow hover:opacity-95"
+            className="w-full bg-coral hover:bg-coral-hover text-white font-extrabold text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-xl shadow-coral/20 transition-all mt-4"
           >
             Submit Dish for Approval
           </button>

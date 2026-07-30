@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchApi } from '../lib/api';
-import { ChefHat, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ChefHat, AlertCircle } from 'lucide-react';
 
 export const SellerRegisterPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -50,46 +50,45 @@ export const SellerRegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto my-12 p-8 bg-white rounded-2xl border border-slate-200 shadow-xl space-y-6">
-      <div className="text-center space-y-2">
-        <div className="w-12 h-12 gradient-saffron rounded-full flex items-center justify-center text-white mx-auto shadow-md">
-          <ChefHat className="w-6 h-6" />
+    <div className="max-w-2xl mx-auto my-20 p-8 sm:p-12 bg-surface-card rounded-[2.5rem] border border-white/10 shadow-2xl space-y-8">
+      <div className="text-center space-y-3">
+        <div className="w-14 h-14 bg-coral/10 border border-coral/30 rounded-2xl flex items-center justify-center text-coral mx-auto shadow-lg shadow-coral/10">
+          <ChefHat className="w-6 h-6 text-coral" />
         </div>
-        <h1 className="text-3xl font-extrabold text-slate-900">Become a Gruhini Home Chef</h1>
-        <p className="text-xs text-slate-500">
-          Share your authentic home-cooked meals with food lovers in your city
-        </p>
+        <span className="text-coral font-bold text-[10px] uppercase tracking-[0.3em] block">CHEF ONBOARDING</span>
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white uppercase">BECOME A HOME CHEF</h1>
+        <p className="text-xs text-neutral-400">Share your authentic home-cooked meals with food lovers in your city</p>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-center space-x-2 text-xs">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-center space-x-3 text-xs">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+      <form onSubmit={handleSubmit} className="space-y-6 text-xs font-medium">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Chef Name</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Chef Name</label>
             <input
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="Sunita Sharma"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Kitchen / Business Name</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Kitchen / Business Name</label>
             <input
               type="text"
               required
               value={businessName}
               onChange={(e) => setBusinessName(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="Sunita's Royal Kitchen"
             />
           </div>
@@ -97,61 +96,61 @@ export const SellerRegisterPage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="chef@gmail.com"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Phone Number</label>
+            <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Phone Number</label>
             <input
               type="text"
               required
               maxLength={10}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
               placeholder="9876543210"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Kitchen Description</label>
+          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Kitchen Description</label>
           <textarea
-            rows={2}
+            rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+            className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
             placeholder="Specializing in Malwa Thalis, fresh Halwa, and zero-oil evening snacks..."
           />
         </div>
 
-        <div className="border-t pt-4 space-y-3">
-          <h3 className="font-bold text-slate-900 text-xs uppercase">Kitchen Address Details</h3>
+        <div className="border-t border-white/10 pt-6 space-y-4">
+          <h3 className="font-extrabold text-white text-xs uppercase tracking-widest">Kitchen Address Details</h3>
           <input
             type="text"
             required
             placeholder="Street Address / House No."
             value={addressLine}
             onChange={(e) => setAddressLine(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+            className="w-full px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
           />
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-3">
             <input
               type="text"
               required
               placeholder="Pincode"
               value={pincode}
               onChange={(e) => setPincode(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
             />
             <input
               type="text"
@@ -159,7 +158,7 @@ export const SellerRegisterPage: React.FC = () => {
               placeholder="City"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
             />
             <input
               type="text"
@@ -167,7 +166,7 @@ export const SellerRegisterPage: React.FC = () => {
               placeholder="State"
               value={state}
               onChange={(e) => setState(e.target.value)}
-              className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg"
+              className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-2xl text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
             />
           </div>
         </div>
@@ -175,7 +174,7 @@ export const SellerRegisterPage: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full gradient-saffron text-white font-bold py-3 rounded-xl shadow-lg hover:opacity-95 transition-opacity disabled:opacity-50 text-sm mt-4"
+          className="w-full bg-coral hover:bg-coral-hover text-white font-extrabold text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-xl shadow-coral/20 transition-all disabled:opacity-50 mt-4"
         >
           {loading ? 'Submitting Application...' : 'Register Kitchen'}
         </button>

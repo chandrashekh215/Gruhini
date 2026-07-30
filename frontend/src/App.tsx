@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { FloatingBottomNav } from './components/FloatingBottomNav';
 import { HomePage } from './pages/HomePage';
 import { ExplorePage } from './pages/ExplorePage';
 import { ProductDetailPage } from './pages/ProductDetailPage';
@@ -21,10 +22,10 @@ export function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="min-h-screen flex flex-col justify-between bg-slate-50">
+          <div className="min-h-screen flex flex-col justify-between bg-[#050505] text-[#ebebeb] selection:bg-coral selection:text-white">
             <div>
               <Navbar />
-              <main>
+              <main className="pt-20">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/explore" element={<ExplorePage />} />
@@ -40,6 +41,7 @@ export function App() {
                 </Routes>
               </main>
             </div>
+            <FloatingBottomNav />
             <Footer />
           </div>
         </Router>
