@@ -37,44 +37,43 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto my-20 p-8 sm:p-10 bg-surface-card rounded-[2.5rem] border border-white/10 shadow-2xl space-y-8">
-      <div className="text-center space-y-3">
-        <div className="w-14 h-14 bg-coral/10 border border-coral/30 rounded-2xl flex items-center justify-center text-coral mx-auto shadow-lg shadow-coral/10">
-          <LogIn className="w-6 h-6 text-coral" />
+    <div className="max-w-md mx-auto my-16 p-8 bg-white rounded-2xl border border-slate-200 shadow-xl space-y-6">
+      <div className="text-center space-y-2">
+        <div className="w-12 h-12 gradient-saffron rounded-full flex items-center justify-center text-white mx-auto shadow-md">
+          <LogIn className="w-6 h-6" />
         </div>
-        <span className="text-coral font-bold text-[10px] uppercase tracking-[0.3em] block">WELCOME BACK</span>
-        <h1 className="text-3xl font-black tracking-tight text-white uppercase">SIGN IN</h1>
-        <p className="text-xs text-neutral-400">Access your orders, cart, and chef dashboard</p>
+        <h1 className="text-2xl font-extrabold text-slate-900">Sign In to Gruhini</h1>
+        <p className="text-xs text-slate-500">Access your orders, cart, and home chef profile</p>
       </div>
 
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-center space-x-3 text-xs">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg flex items-center space-x-2 text-xs">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Email Address</label>
+          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email Address</label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3.5 bg-neutral-900 border border-white/10 rounded-2xl text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Password</label>
+          <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Password</label>
           <input
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3.5 bg-neutral-900 border border-white/10 rounded-2xl text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-coral transition-colors"
+            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
             placeholder="••••••••"
           />
         </div>
@@ -82,15 +81,15 @@ export const LoginPage: React.FC = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-coral hover:bg-coral-hover text-white font-extrabold text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-xl shadow-coral/20 transition-all disabled:opacity-50"
+          className="w-full gradient-saffron text-white font-bold py-3 rounded-xl shadow-lg hover:opacity-95 transition-opacity disabled:opacity-50 text-sm"
         >
           {loading ? 'Authenticating...' : 'Sign In'}
         </button>
       </form>
 
-      <div className="text-center text-xs text-neutral-400 pt-4 border-t border-white/5">
+      <div className="text-center text-xs text-slate-500 pt-2 border-t">
         Don't have an account?{' '}
-        <Link to="/register" className="font-bold text-coral hover:underline uppercase tracking-wider">
+        <Link to="/register" className="font-bold text-amber-600 hover:underline">
           Register here
         </Link>
       </div>

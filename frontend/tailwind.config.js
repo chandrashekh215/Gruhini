@@ -4,32 +4,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        midnight: '#050505',
-        surface: {
-          dark: '#111111',
-          card: '#161616',
-          border: '#222222',
-          borderHover: '#333333',
+        brand: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
         },
-        coral: {
-          DEFAULT: '#FF6B50',
-          hover: '#E55A40',
-          light: '#FF8570',
-          subtle: 'rgba(255, 107, 80, 0.12)',
+        royal: {
+          800: '#1e1b4b',
+          900: '#0f172a',
         },
-        editorial: {
-          text: '#ebebeb',
-          muted: '#888888',
-          subtle: '#666666',
+        saffron: {
+          500: '#ff9933',
         },
-      },
-      fontFamily: {
-        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
-      },
-      letterSpacing: {
-        widest: '0.25em',
-        ultra: '0.35em',
       },
     },
   },
