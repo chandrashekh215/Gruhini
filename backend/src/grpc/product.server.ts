@@ -1,12 +1,21 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
+import fs from 'fs';
 import { prisma } from '../lib/prisma.js';
 
-const PROTO_PATH = path.resolve(process.cwd(), 'src/main/proto/product.proto');
+let PROTO_PATH = path.resolve(process.cwd(), '../src/main/proto/product.proto');
+if (!fs.existsSync(PROTO_PATH)) {
+  PROTO_PATH = path.resolve(process.cwd(), 'src/main/proto/product.proto');
+}
 
 export function startGrpcServer(port = 50051) {
   try {
+    if (!fs.existsSync(PROTO_PATH)) {
+      console.log(`ℹ️ gRPC proto file not found at ${PROTO_PATH}, skipping gRPC service.`);
+      return;
+    }
+
     const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
       keepCase: true,
       longs: String,
@@ -69,6 +78,6 @@ export function startGrpcServer(port = 50051) {
       console.log(`🚀 gRPC Product Service running on port ${boundPort}`);
     });
   } catch (error) {
-    console.warn('gRPC server initialization skipped or proto file not found:', error);
+    console.warn('gRPC server initialization skipped:', error);
   }
 }
