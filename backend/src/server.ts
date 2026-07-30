@@ -3,33 +3,20 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import apiRouter from './routes/api.routes.js';
 import { globalErrorHandler } from './middlewares/error.middleware.js';
-import { startGrpcServer } from './grpc/product.server.js';
+import { startGrpcServer } from './grpc/product.server.ts';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS setup matching Spring Security config
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  'https://gruhini-app1.onrender.com',
-  'https://gruhani-app.onrender.com',
-];
-
+// Allow CORS from any origin (Vercel, Localhost, Render, etc.)
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['*'],
-    credentials: false,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
   })
 );
 
@@ -49,7 +36,7 @@ app.use(globalErrorHandler);
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`🌐 Express REST Server running on http://localhost:${PORT}`);
+  console.log(`🌐 Express REST Server running on port ${PORT}`);
   startGrpcServer(Number(process.env.GRPC_PORT) || 50051);
 });
 
