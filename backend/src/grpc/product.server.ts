@@ -1,13 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { prisma } from '../lib/prisma.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const PROTO_PATH = path.resolve(__dirname, '../../../src/main/proto/product.proto');
+const PROTO_PATH = path.resolve(process.cwd(), 'src/main/proto/product.proto');
 
 export function startGrpcServer(port = 50051) {
   try {
