@@ -6,6 +6,7 @@ export interface UserProfile {
   name?: string;
   email?: string;
   contact?: string;
+  profileImageUrl?: string;
   roles?: string[];
 }
 
