@@ -1,4 +1,8 @@
-const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:5000';
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const DEFAULT_BACKEND = isLocalhost ? 'http://localhost:5000' : 'https://gruhani-backend-ktro.onrender.com';
+
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || DEFAULT_BACKEND;
 
 export function getAuthToken(): string | null {
   return localStorage.getItem('gruhini_token');
