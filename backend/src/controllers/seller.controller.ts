@@ -8,7 +8,7 @@ export async function addProduct(req: Request, res: Response, next: NextFunction
   try {
     const userId = req.user!.id;
     const seller = await prisma.seller.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
     });
 
     if (!seller) {
@@ -26,7 +26,7 @@ export async function addProduct(req: Request, res: Response, next: NextFunction
     const product = await prisma.product.create({
       data: {
         name: dataJson.name,
-        price: Number(dataJson.price),
+        price: dataJson.price,
         category: dataJson.category || dataJson.categories || 'THALI',
         subcategory: dataJson.subcategory || '',
         description: dataJson.description || '',
@@ -43,7 +43,7 @@ export async function addProduct(req: Request, res: Response, next: NextFunction
       serializeData({
         success: true,
         message: 'Seller registered successfully',
-        product_id: product.id,
+        product_id: Number(product.id),
       })
     );
   } catch (error) {
@@ -57,7 +57,7 @@ export async function getSellerProducts(req: Request, res: Response, next: NextF
     const { productStatus } = req.query;
 
     const seller = await prisma.seller.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
     });
 
     if (!seller) {
@@ -67,14 +67,14 @@ export async function getSellerProducts(req: Request, res: Response, next: NextF
     const products = await prisma.product.findMany({
       where: {
         sellerId: seller.id,
-        ...(productStatus ? { status: productStatus as string } : {}),
+        ...(productStatus ? { status: productStatus as any } : {}),
       },
     });
 
     const dtoList = products.map((p) => ({
-      id: p.id,
+      id: Number(p.id),
       name: p.name,
-      price: p.price,
+      price: Number(p.price),
       categories: p.category,
       subcategory: p.subcategory || '',
       description: p.description || '',
@@ -86,7 +86,7 @@ export async function getSellerProducts(req: Request, res: Response, next: NextF
       message: p.message || '',
       deliveryTime: p.deliveryTime,
       badge: p.badge || '',
-      sellerId: p.sellerId,
+      sellerId: Number(p.sellerId),
       image: p.image,
     }));
 
@@ -101,7 +101,7 @@ export async function deleteProduct(req: Request, res: Response, next: NextFunct
     const id = Number(req.query.id || req.params.id);
 
     await prisma.product.delete({
-      where: { id },
+      where: { id: BigInt(id) },
     });
 
     return res.json({
@@ -118,10 +118,10 @@ export async function updateProduct(req: Request, res: Response, next: NextFunct
     const { id, name, price, stock, description, deliveryTime, discount, category } = req.body;
 
     await prisma.product.update({
-      where: { id: Number(id) },
+      where: { id: BigInt(id) },
       data: {
         ...(name ? { name } : {}),
-        ...(price !== undefined ? { price: Number(price) } : {}),
+        ...(price !== undefined ? { price } : {}),
         ...(stock !== undefined ? { stock: Number(stock) } : {}),
         ...(description ? { description } : {}),
         ...(deliveryTime ? { deliveryTime } : {}),
@@ -142,7 +142,7 @@ export async function acceptOrder(req: Request, res: Response, next: NextFunctio
 
     await prisma.order.updateMany({
       where: {
-        id: { in: orderIds.map((id) => Number(id)) },
+        id: { in: orderIds.map((id) => BigInt(id)) },
       },
       data: { orderStatus: 'ACCEPTED' },
     });
@@ -159,7 +159,7 @@ export async function rejectOrder(req: Request, res: Response, next: NextFunctio
 
     await prisma.order.updateMany({
       where: {
-        id: { in: orderIds.map((id) => Number(id)) },
+        id: { in: orderIds.map((id) => BigInt(id)) },
       },
       data: { orderStatus: 'REJECTED' },
     });
@@ -176,7 +176,7 @@ export async function viewSellerOrders(req: Request, res: Response, next: NextFu
     const { orderStatus } = req.query;
 
     const seller = await prisma.seller.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
     });
 
     if (!seller) {
@@ -186,7 +186,7 @@ export async function viewSellerOrders(req: Request, res: Response, next: NextFu
     const orders = await prisma.order.findMany({
       where: {
         sellerId: seller.id,
-        ...(orderStatus ? { orderStatus: orderStatus as string } : {}),
+        ...(orderStatus ? { orderStatus: orderStatus as any } : {}),
       },
       include: {
         user: true,
@@ -201,9 +201,9 @@ export async function viewSellerOrders(req: Request, res: Response, next: NextFu
     });
 
     const responses = orders.map((order) => ({
-      id: order.id,
+      id: Number(order.id),
       placedAt: order.placedAt,
-      orderValue: order.orderValue,
+      orderValue: Number(order.orderValue),
       message: order.message,
       userDetails: {
         name: order.user.name,
@@ -214,7 +214,7 @@ export async function viewSellerOrders(req: Request, res: Response, next: NextFu
       deliveryTime: order.deliveryTime,
       deliveryAddress: order.deliveryAddress
         ? {
-            id: order.deliveryAddress.id,
+            id: Number(order.deliveryAddress.id),
             addressLine: order.deliveryAddress.addressLine,
             pincode: order.deliveryAddress.pincode,
             state: order.deliveryAddress.state,
@@ -225,7 +225,7 @@ export async function viewSellerOrders(req: Request, res: Response, next: NextFu
         productName: oi.product.name,
         productImage: oi.product.image,
         quantity: oi.quantity,
-        priceAtOrderTime: oi.priceAtOrderTime,
+        priceAtOrderTime: Number(oi.priceAtOrderTime),
       })),
     }));
 
@@ -246,7 +246,7 @@ export async function verifyOtp(req: Request, res: Response, next: NextFunction)
     const otp = req.query.otp as string;
 
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: BigInt(orderId) },
     });
 
     if (!order || !order.hashedOtp) {
@@ -256,7 +256,7 @@ export async function verifyOtp(req: Request, res: Response, next: NextFunction)
     const isMatch = await bcrypt.compare(otp, order.hashedOtp);
     if (isMatch) {
       await prisma.order.update({
-        where: { id: orderId },
+        where: { id: BigInt(orderId) },
         data: {
           otpVerified: true,
           orderStatus: 'DELIVERED',
@@ -277,7 +277,7 @@ export async function updateSellerProfile(req: Request, res: Response, next: Nex
     const { businessName, phone, description } = req.body;
 
     await prisma.seller.update({
-      where: { userId },
+      where: { userId: BigInt(userId) },
       data: {
         ...(businessName ? { businessName } : {}),
         ...(phone ? { contactNo: phone } : {}),
@@ -296,7 +296,7 @@ export async function getSellerProfile(req: Request, res: Response, next: NextFu
     const userId = req.user!.id;
 
     const s = await prisma.seller.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
       include: {
         user: true,
         address: true,
@@ -308,12 +308,12 @@ export async function getSellerProfile(req: Request, res: Response, next: NextFu
     }
 
     const dto = {
-      id: s.id,
+      id: Number(s.id),
       name: s.user?.name || '',
       contact: s.contactNo,
       address: s.address
         ? {
-            id: s.address.id,
+            id: Number(s.address.id),
             addressLine: s.address.addressLine,
             pincode: s.address.pincode,
             state: s.address.state,

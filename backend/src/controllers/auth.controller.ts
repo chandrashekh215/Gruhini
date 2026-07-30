@@ -24,8 +24,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       throw new AppError('Invalid email or password', 400);
     }
 
-    const roles = user.role.split(',');
-    const token = generateJwtToken(user.id, user.email, roles);
+    const roles = user.role.map((r) => r.toString());
+    const token = generateJwtToken(Number(user.id), user.email, roles);
 
     return res.json({ token });
   } catch (error) {
@@ -54,7 +54,7 @@ export async function registerUser(req: Request, res: Response, next: NextFuncti
         email,
         contact,
         password: hashedPassword,
-        role: 'ROLE_USER',
+        role: ['ROLE_USER'],
         cart: {
           create: {},
         },
@@ -95,7 +95,7 @@ export async function registerSeller(req: Request, res: Response, next: NextFunc
           email,
           contact: phone,
           password: defaultPass,
-          role: 'ROLE_USER,ROLE_SELLER',
+          role: ['ROLE_USER', 'ROLE_SELLER'],
           cart: { create: {} },
         },
       });
@@ -104,7 +104,7 @@ export async function registerSeller(req: Request, res: Response, next: NextFunc
         await prisma.users.update({
           where: { id: user.id },
           data: {
-            role: `${user.role},ROLE_SELLER`,
+            role: [...user.role, 'ROLE_SELLER'],
           },
         });
       }
@@ -133,7 +133,7 @@ export async function registerSeller(req: Request, res: Response, next: NextFunc
         contactNo: phone || user.contact || '',
         userId: user.id,
         addressId: createdAddress ? createdAddress.id : undefined,
-        categories: Array.isArray(categories) ? categories.join(',') : 'THALI',
+        categories: categories || ['THALI'],
         description,
         isApproved: false,
       },
@@ -179,13 +179,13 @@ export async function logout(req: Request, res: Response) {
 export async function deleteUser(req: Request, res: Response, next: NextFunction) {
   try {
     const id = Number(req.params.id);
-    const user = await prisma.users.findUnique({ where: { id } });
+    const user = await prisma.users.findUnique({ where: { id: BigInt(id) } });
 
     if (!user) {
       throw new AppError('Check if you are registered before deleting account', 409);
     }
 
-    await prisma.users.delete({ where: { id } });
+    await prisma.users.delete({ where: { id: BigInt(id) } });
     return res.json('Successfully Deleted User Account');
   } catch (error) {
     next(error);

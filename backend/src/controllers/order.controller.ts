@@ -10,7 +10,7 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
     const { addressId } = req.body;
 
     const user = await prisma.users.findUnique({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
       include: {
         cart: {
           include: {
@@ -55,7 +55,7 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
     }
 
     const totalValue = cartItems.reduce(
-      (sum, item) => sum + item.priceAtAddTime * item.quantity,
+      (sum, item) => sum + Number(item.priceAtAddTime) * item.quantity,
       0
     );
 
@@ -64,12 +64,12 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
     const expiration = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
 
     const address = addressId
-      ? await prisma.address.findUnique({ where: { id: Number(addressId) } })
+      ? await prisma.address.findUnique({ where: { id: BigInt(addressId) } })
       : null;
 
     const order = await prisma.order.create({
       data: {
-        userId,
+        userId: BigInt(userId),
         sellerId: firstSeller.id,
         orderStatus: 'PENDING',
         deliveryTime: '3-4 Days',
@@ -124,18 +124,18 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
     });
 
     const responseDto = {
-      id: order.id,
+      id: Number(order.id),
       placedAt: order.placedAt,
-      orderValue: order.orderValue,
+      orderValue: Number(order.orderValue),
       message: order.message,
       sellerDetails: {
-        id: firstSeller.id,
+        id: Number(firstSeller.id),
         name: firstSeller.user?.name || '',
         contact: firstSeller.contactNo,
         businessName: firstSeller.businessName,
         address: address
           ? {
-              id: address.id,
+              id: Number(address.id),
               addressLine: address.addressLine,
               pincode: address.pincode,
               state: address.state,
@@ -147,7 +147,7 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
       deliveryTime: order.deliveryTime,
       deliveryAddress: address
         ? {
-            id: address.id,
+            id: Number(address.id),
             addressLine: address.addressLine,
             pincode: address.pincode,
             state: address.state,
@@ -158,7 +158,7 @@ export async function placeOrder(req: Request, res: Response, next: NextFunction
         productName: oi.product.name,
         productImage: oi.product.image,
         quantity: oi.quantity,
-        priceAtOrderTime: oi.priceAtOrderTime,
+        priceAtOrderTime: Number(oi.priceAtOrderTime),
       })),
       emailSent,
     };
@@ -174,7 +174,7 @@ export async function cancelOrder(req: Request, res: Response, next: NextFunctio
     const id = Number(req.params.id);
 
     const order = await prisma.order.findUnique({
-      where: { id },
+      where: { id: BigInt(id) },
       include: { orderItemList: true },
     });
 
@@ -191,7 +191,7 @@ export async function cancelOrder(req: Request, res: Response, next: NextFunctio
     }
 
     await prisma.order.update({
-      where: { id },
+      where: { id: BigInt(id) },
       data: { orderStatus: 'CANCELLED' },
     });
 
@@ -212,7 +212,7 @@ export async function viewUserOrders(req: Request, res: Response, next: NextFunc
 
     const orders = await prisma.order.findMany({
       where: {
-        userId,
+        userId: BigInt(userId),
         ...(orderStatus ? { orderStatus: orderStatus as any } : {}),
       },
       include: {
@@ -232,12 +232,12 @@ export async function viewUserOrders(req: Request, res: Response, next: NextFunc
     });
 
     const responses = orders.map((order) => ({
-      id: order.id,
+      id: Number(order.id),
       placedAt: order.placedAt,
-      orderValue: order.orderValue,
+      orderValue: Number(order.orderValue),
       message: order.message,
       sellerDetails: {
-        id: order.seller.id,
+        id: Number(order.seller.id),
         name: order.seller.user?.name || '',
         contact: order.seller.contactNo,
         businessName: order.seller.businessName,
@@ -246,7 +246,7 @@ export async function viewUserOrders(req: Request, res: Response, next: NextFunc
       deliveryTime: order.deliveryTime,
       deliveryAddress: order.deliveryAddress
         ? {
-            id: order.deliveryAddress.id,
+            id: Number(order.deliveryAddress.id),
             addressLine: order.deliveryAddress.addressLine,
             pincode: order.deliveryAddress.pincode,
             state: order.deliveryAddress.state,
@@ -257,7 +257,7 @@ export async function viewUserOrders(req: Request, res: Response, next: NextFunc
         productName: oi.product.name,
         productImage: oi.product.image,
         quantity: oi.quantity,
-        priceAtOrderTime: oi.priceAtOrderTime,
+        priceAtOrderTime: Number(oi.priceAtOrderTime),
       })),
     }));
 
@@ -277,7 +277,7 @@ export async function resendOtp(req: Request, res: Response, next: NextFunction)
     const orderId = Number(req.params.orderId);
 
     const order = await prisma.order.findUnique({
-      where: { id: orderId },
+      where: { id: BigInt(orderId) },
       include: { user: true },
     });
 
@@ -289,7 +289,7 @@ export async function resendOtp(req: Request, res: Response, next: NextFunction)
     const hashedOtp = await bcrypt.hash(otp, 10);
 
     await prisma.order.update({
-      where: { id: orderId },
+      where: { id: BigInt(orderId) },
       data: { hashedOtp },
     });
 
@@ -307,7 +307,7 @@ export async function submitFeedback(req: Request, res: Response, next: NextFunc
     const { orderId, rating, review } = req.body;
 
     const order = await prisma.order.findUnique({
-      where: { id: Number(orderId) },
+      where: { id: BigInt(orderId) },
     });
 
     if (!order) {
@@ -316,8 +316,8 @@ export async function submitFeedback(req: Request, res: Response, next: NextFunc
 
     await prisma.feedback.create({
       data: {
-        orderId: Number(orderId),
-        userId,
+        orderId: BigInt(orderId),
+        userId: BigInt(userId),
         sellerId: order.sellerId,
         rating: Number(rating),
         comment: review,

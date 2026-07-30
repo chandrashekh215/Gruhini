@@ -12,7 +12,7 @@ export async function addToCart(req: Request, res: Response, next: NextFunction)
     }
 
     const product = await prisma.product.findUnique({
-      where: { id: Number(productid) },
+      where: { id: BigInt(productid) },
     });
 
     if (!product) {
@@ -20,19 +20,19 @@ export async function addToCart(req: Request, res: Response, next: NextFunction)
     }
 
     let cart = await prisma.cart.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
     });
 
     if (!cart) {
       cart = await prisma.cart.create({
-        data: { userId },
+        data: { userId: BigInt(userId) },
       });
     }
 
     const existingItem = await prisma.cartItem.findFirst({
       where: {
         cartId: cart.id,
-        productId: Number(productid),
+        productId: BigInt(productid),
       },
     });
 
@@ -45,7 +45,7 @@ export async function addToCart(req: Request, res: Response, next: NextFunction)
       await prisma.cartItem.create({
         data: {
           cartId: cart.id,
-          productId: Number(productid),
+          productId: BigInt(productid),
           quantity: quantity,
           priceAtAddTime: product.price,
         },
@@ -63,7 +63,7 @@ export async function getCart(req: Request, res: Response, next: NextFunction) {
     const userId = req.user!.id;
 
     const cart = await prisma.cart.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
       include: {
         cartItems: {
           include: {
@@ -88,10 +88,10 @@ export async function getCart(req: Request, res: Response, next: NextFunction) {
     const items = cart.cartItems
       .filter((ci) => ci.product != null)
       .map((ci) => ({
-        productid: ci.product.id,
+        productid: Number(ci.product.id),
         productname: ci.product.name,
         chefname: ci.product.seller?.user?.name || 'Gruhani Home Chef',
-        price: ci.priceAtAddTime,
+        price: Number(ci.priceAtAddTime),
         image: ci.product.image,
         quantity: ci.quantity,
       }));
@@ -108,7 +108,7 @@ export async function removeFromCart(req: Request, res: Response, next: NextFunc
     const productId = Number(req.params.id);
 
     const cart = await prisma.cart.findUnique({
-      where: { userId },
+      where: { userId: BigInt(userId) },
     });
 
     if (!cart) {
@@ -118,7 +118,7 @@ export async function removeFromCart(req: Request, res: Response, next: NextFunc
     const deleted = await prisma.cartItem.deleteMany({
       where: {
         cartId: cart.id,
-        productId,
+        productId: BigInt(productId),
       },
     });
 

@@ -7,7 +7,7 @@ export async function viewProfile(req: Request, res: Response, next: NextFunctio
     const userId = req.user!.id;
 
     const user = await prisma.users.findUnique({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
       include: { addresses: true },
     });
 
@@ -16,13 +16,13 @@ export async function viewProfile(req: Request, res: Response, next: NextFunctio
     }
 
     const dto = {
-      id: user.id,
+      id: Number(user.id),
       name: user.name,
       email: user.email,
       contact: user.contact || '',
       profileImageUrl: user.profileImageUrl || '',
       addresses: user.addresses.map((a) => ({
-        id: a.id,
+        id: Number(a.id),
         addressLine: a.addressLine,
         pincode: a.pincode,
         state: a.state,
@@ -42,7 +42,7 @@ export async function updateProfile(req: Request, res: Response, next: NextFunct
     const { name, contact } = req.body;
 
     await prisma.users.update({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
       data: {
         ...(name ? { name } : {}),
         ...(contact ? { contact } : {}),
@@ -62,7 +62,7 @@ export async function addAddress(req: Request, res: Response, next: NextFunction
 
     await prisma.address.create({
       data: {
-        userId,
+        userId: BigInt(userId),
         addressLine,
         pincode,
         state,
@@ -87,7 +87,7 @@ export async function uploadProfilePicture(req: Request, res: Response, next: Ne
     }
 
     await prisma.users.update({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
       data: { profileImageUrl: imageUrl },
     });
 

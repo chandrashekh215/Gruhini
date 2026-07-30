@@ -30,17 +30,17 @@ export async function jwtAuthMiddleware(req: Request, res: Response, next: NextF
     const userId = claims.jwtClaims.userid;
 
     const user = await prisma.users.findUnique({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
     });
 
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
     }
 
-    const roles = user.role.split(',');
+    const roles = user.role.map((r) => r.toString());
 
     req.user = {
-      id: user.id,
+      id: Number(user.id),
       email: user.email,
       roles: roles,
     };

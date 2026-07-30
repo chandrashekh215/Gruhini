@@ -9,9 +9,9 @@ export async function viewPending(req: Request, res: Response, next: NextFunctio
     });
 
     const dtoList = products.map((p) => ({
-      id: p.id,
+      id: Number(p.id),
       name: p.name,
-      price: p.price,
+      price: Number(p.price),
       categories: p.category,
       subcategory: p.subcategory || '',
       description: p.description || '',
@@ -23,7 +23,7 @@ export async function viewPending(req: Request, res: Response, next: NextFunctio
       message: p.message || '',
       deliveryTime: p.deliveryTime,
       badge: p.badge || '',
-      sellerId: p.sellerId,
+      sellerId: Number(p.sellerId),
       image: p.image,
     }));
 
@@ -42,7 +42,7 @@ export async function acceptItem(req: Request, res: Response, next: NextFunction
     }
 
     await prisma.product.updateMany({
-      where: { id: { in: selectedProducts.map((id: number) => Number(id)) } },
+      where: { id: { in: selectedProducts.map((id: number) => BigInt(id)) } },
       data: { status: 'APPROVED', verified: true },
     });
 
@@ -61,7 +61,7 @@ export async function rejectItem(req: Request, res: Response, next: NextFunction
     }
 
     await prisma.product.updateMany({
-      where: { id: { in: selectedProducts.map((id: number) => Number(id)) } },
+      where: { id: { in: selectedProducts.map((id: number) => BigInt(id)) } },
       data: { status: 'REJECTED', message },
     });
 
@@ -76,9 +76,9 @@ export async function viewAllProducts(req: Request, res: Response, next: NextFun
     const products = await prisma.product.findMany();
 
     const dtoList = products.map((p) => ({
-      id: p.id,
+      id: Number(p.id),
       name: p.name,
-      price: p.price,
+      price: Number(p.price),
       categories: p.category,
       subcategory: p.subcategory || '',
       description: p.description || '',
@@ -90,7 +90,7 @@ export async function viewAllProducts(req: Request, res: Response, next: NextFun
       message: p.message || '',
       deliveryTime: p.deliveryTime,
       badge: p.badge || '',
-      sellerId: p.sellerId,
+      sellerId: Number(p.sellerId),
       image: p.image,
     }));
 
@@ -107,12 +107,12 @@ export async function viewAllSellers(req: Request, res: Response, next: NextFunc
     });
 
     const dtoList = sellers.map((s) => ({
-      id: s.id,
+      id: Number(s.id),
       name: s.user?.name || '',
       contact: s.contactNo,
       address: s.address
         ? {
-            id: s.address.id,
+            id: Number(s.address.id),
             addressLine: s.address.addressLine,
             pincode: s.address.pincode,
             state: s.address.state,
@@ -139,7 +139,7 @@ export async function deleteProducts(req: Request, res: Response, next: NextFunc
     }
 
     await prisma.product.deleteMany({
-      where: { id: { in: selectedProducts.map((id: number) => Number(id)) } },
+      where: { id: { in: selectedProducts.map((id: number) => BigInt(id)) } },
     });
 
     return res.send('SUCCESSFULLY DELETED THE SELECTED PRODUCTS');
@@ -153,7 +153,7 @@ export async function deleteSeller(req: Request, res: Response, next: NextFuncti
     const id = Number(req.params.id);
 
     await prisma.seller.delete({
-      where: { id },
+      where: { id: BigInt(id) },
     });
 
     return res.send('SUCCESSFULLY DELETED THE SELLER');
@@ -167,7 +167,7 @@ export async function viewSellerAdminDetails(req: Request, res: Response, next: 
     const id = Number(req.params.id);
 
     const s = await prisma.seller.findUnique({
-      where: { id },
+      where: { id: BigInt(id) },
       include: {
         user: true,
         orders: true,
@@ -183,10 +183,10 @@ export async function viewSellerAdminDetails(req: Request, res: Response, next: 
     const pendingOrders = s.orders.filter((o) => o.orderStatus === 'PENDING').length;
     const totalRevenue = s.orders
       .filter((o) => o.orderStatus === 'DELIVERED')
-      .reduce((sum, o) => sum + o.orderValue, 0);
+      .reduce((sum, o) => sum + Number(o.orderValue), 0);
 
     const dto = {
-      sellerId: s.id,
+      sellerId: Number(s.id),
       sellerName: s.user?.name || '',
       businessName: s.businessName,
       contact: s.contactNo,
@@ -212,13 +212,13 @@ export async function viewOrdersSummary(req: Request, res: Response, next: NextF
       include: {
         user: true,
         orders: {
-          where: orderStatus ? { orderStatus: orderStatus as string } : {},
+          where: orderStatus ? { orderStatus: orderStatus as any } : {},
         },
       },
     });
 
     const summaries = sellers.map((s) => ({
-      sellerId: s.id,
+      sellerId: Number(s.id),
       businessName: s.businessName,
       sellerName: s.user?.name || '',
       totalOrders: s.orders.length,
@@ -237,8 +237,8 @@ export async function viewOrdersBySeller(req: Request, res: Response, next: Next
 
     const orders = await prisma.order.findMany({
       where: {
-        sellerId: id,
-        ...(Status ? { orderStatus: Status as string } : {}),
+        sellerId: BigInt(id),
+        ...(Status ? { orderStatus: Status as any } : {}),
       },
       include: {
         user: true,
@@ -250,9 +250,9 @@ export async function viewOrdersBySeller(req: Request, res: Response, next: Next
     });
 
     const responses = orders.map((order) => ({
-      id: order.id,
+      id: Number(order.id),
       placedAt: order.placedAt,
-      orderValue: order.orderValue,
+      orderValue: Number(order.orderValue),
       message: order.message,
       userDetails: {
         name: order.user.name,
@@ -263,7 +263,7 @@ export async function viewOrdersBySeller(req: Request, res: Response, next: Next
       deliveryTime: order.deliveryTime,
       deliveryAddress: order.deliveryAddress
         ? {
-            id: order.deliveryAddress.id,
+            id: Number(order.deliveryAddress.id),
             addressLine: order.deliveryAddress.addressLine,
             pincode: order.deliveryAddress.pincode,
             state: order.deliveryAddress.state,
@@ -274,7 +274,7 @@ export async function viewOrdersBySeller(req: Request, res: Response, next: Next
         productName: oi.product.name,
         productImage: oi.product.image,
         quantity: oi.quantity,
-        priceAtOrderTime: oi.priceAtOrderTime,
+        priceAtOrderTime: Number(oi.priceAtOrderTime),
       })),
     }));
 
@@ -290,7 +290,7 @@ export async function approveSeller(req: Request, res: Response, next: NextFunct
 
     if (selectedProducts && Array.isArray(selectedProducts)) {
       await prisma.seller.updateMany({
-        where: { id: { in: selectedProducts.map((id: number) => Number(id)) } },
+        where: { id: { in: selectedProducts.map((id: number) => BigInt(id)) } },
         data: { isApproved: true },
       });
     }
@@ -309,12 +309,12 @@ export async function viewPendingSellers(req: Request, res: Response, next: Next
     });
 
     const dtoList = pendingSellers.map((s) => ({
-      id: s.id,
+      id: Number(s.id),
       name: s.user?.name || '',
       contact: s.contactNo,
       address: s.address
         ? {
-            id: s.address.id,
+            id: Number(s.address.id),
             addressLine: s.address.addressLine,
             pincode: s.address.pincode,
             state: s.address.state,

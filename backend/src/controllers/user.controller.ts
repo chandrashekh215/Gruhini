@@ -18,9 +18,9 @@ export async function exploreProducts(req: Request, res: Response, next: NextFun
     });
 
     const dtoList = products.map((p) => ({
-      id: p.id,
+      id: Number(p.id),
       name: p.name,
-      price: p.price,
+      price: Number(p.price),
       categories: p.category,
       subcategory: p.subcategory || '',
       description: p.description || '',
@@ -32,7 +32,7 @@ export async function exploreProducts(req: Request, res: Response, next: NextFun
       message: p.message || '',
       deliveryTime: p.deliveryTime,
       badge: p.badge || '',
-      sellerId: p.sellerId,
+      sellerId: Number(p.sellerId),
       image: p.image,
     }));
 
@@ -46,7 +46,7 @@ export async function viewSingleProduct(req: Request, res: Response, next: NextF
   try {
     const id = Number(req.params.id);
     const p = await prisma.product.findUnique({
-      where: { id },
+      where: { id: BigInt(id) },
     });
 
     if (!p) {
@@ -54,9 +54,9 @@ export async function viewSingleProduct(req: Request, res: Response, next: NextF
     }
 
     const dto = {
-      id: p.id,
+      id: Number(p.id),
       name: p.name,
-      price: p.price,
+      price: Number(p.price),
       categories: p.category,
       subcategory: p.subcategory || '',
       description: p.description || '',
@@ -68,7 +68,7 @@ export async function viewSingleProduct(req: Request, res: Response, next: NextF
       message: p.message || '',
       deliveryTime: p.deliveryTime,
       badge: p.badge || '',
-      sellerId: p.sellerId,
+      sellerId: Number(p.sellerId),
       image: p.image,
     };
 
@@ -88,7 +88,7 @@ export async function getAllSellers(req: Request, res: Response, next: NextFunct
     });
 
     const summaryList = sellers.map((s) => ({
-      id: s.id,
+      id: Number(s.id),
       businessName: s.businessName,
       profileImageUrl: s.user?.profileImageUrl || 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=200&auto=format&fit=crop&q=60',
       rating: s.rating || 4.8,
@@ -104,7 +104,7 @@ export async function getSellerDetails(req: Request, res: Response, next: NextFu
   try {
     const id = Number(req.params.id);
     const s = await prisma.seller.findUnique({
-      where: { id },
+      where: { id: BigInt(id) },
       include: {
         user: true,
         address: true,
@@ -116,12 +116,12 @@ export async function getSellerDetails(req: Request, res: Response, next: NextFu
     }
 
     const dto = {
-      id: s.id,
+      id: Number(s.id),
       name: s.user?.name || '',
       contact: s.contactNo,
       address: s.address
         ? {
-            id: s.address.id,
+            id: Number(s.address.id),
             addressLine: s.address.addressLine,
             pincode: s.address.pincode,
             state: s.address.state,
@@ -219,7 +219,7 @@ export async function saveFcmToken(req: Request, res: Response, next: NextFuncti
     const { fcmToken } = req.body;
 
     await prisma.users.update({
-      where: { id: userId },
+      where: { id: BigInt(userId) },
       data: { fcmToken },
     });
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role, Category } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -7,7 +7,7 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   // 1. Create Customer
-  const customer = await prisma.users.upsert({
+  await prisma.users.upsert({
     where: { email: 'customer@gruhini.com' },
     update: {},
     create: {
@@ -15,7 +15,7 @@ async function main() {
       email: 'customer@gruhini.com',
       contact: '9876543210',
       password: hashedPassword,
-      role: 'ROLE_USER',
+      role: [Role.ROLE_USER],
       cart: { create: {} },
       addresses: {
         create: {
@@ -37,7 +37,7 @@ async function main() {
       email: 'sunita@gruhini.com',
       contact: '9988776655',
       password: hashedPassword,
-      role: 'ROLE_USER,ROLE_SELLER',
+      role: [Role.ROLE_USER, Role.ROLE_SELLER],
       profileImageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&auto=format&fit=crop&q=80',
       cart: { create: {} },
       seller: {
@@ -45,7 +45,7 @@ async function main() {
           businessName: "Sunita's Royal Kitchen",
           contactNo: '9988776655',
           isApproved: true,
-          categories: 'THALI,SWEETS,SNACKS',
+          categories: [Category.THALI, Category.SWEETS, Category.SNACKS],
           rating: 4.9,
           description: 'Specializing in Malvi Thalis, homemade Suji Cakes, and Pure Desi Ghee Halwa',
         },
@@ -64,7 +64,7 @@ async function main() {
           name: 'Special Royal Malwa Thali',
           description: 'Fresh 4 Phulkas, Bafla, Daal Fry, Paneer Butter Masala, Rice, Salad & Gulab Jamun',
           price: 180,
-          category: 'THALI',
+          category: Category.THALI,
           subcategory: 'North Indian',
           stock: 25,
           status: 'APPROVED',
@@ -78,7 +78,7 @@ async function main() {
           name: 'Semolina Suji Cake (Eggless)',
           description: 'Freshly baked homemade Suji Cake made with Desi Ghee, cardamom, and roasted dry fruits',
           price: 220,
-          category: 'SWEETS',
+          category: Category.SWEETS,
           subcategory: 'Cakes',
           stock: 15,
           status: 'APPROVED',
@@ -92,7 +92,7 @@ async function main() {
           name: 'Desi Ghee Moong Dal Halwa',
           description: 'Rich, slow-cooked Moong Dal Halwa made with pure A2 cow ghee and saffron',
           price: 160,
-          category: 'SWEETS',
+          category: Category.SWEETS,
           subcategory: 'Halwa',
           stock: 30,
           status: 'APPROVED',
@@ -106,7 +106,7 @@ async function main() {
           name: 'Crispy Evening Poha Jalebi Combo',
           description: 'Indori style Poha topped with Sev, Jeeravan, served with hot crispy Jalebi',
           price: 90,
-          category: 'SNACKS',
+          category: Category.SNACKS,
           subcategory: 'Breakfast',
           stock: 40,
           status: 'APPROVED',
@@ -120,7 +120,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Database seeded with initial home-cooked dishes & users!');
+  console.log('✅ PostgreSQL database seeded successfully!');
 }
 
 main()
