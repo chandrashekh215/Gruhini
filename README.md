@@ -1,7 +1,27 @@
-# GRUHINI — Full-Stack Marketplace (Node.js/Express + React/Vite)
+# 🥘 GRUHINI — Full-Stack Marketplace (Node.js/Express + React/Vite)
 
 > **"Ghar Jaisa Khana, Ghar Ke Log"**  
-> A complete full-stack marketplace connecting local home chefs with food lovers craving authentic, homemade meals.
+> A modern, complete full-stack marketplace connecting local home chefs with food lovers looking for authentic, fresh, homemade meals.
+
+---
+
+## 📸 Screenshots & Preview
+
+| Home Page | Explore Products | Product Details |
+| :---: | :---: | :---: |
+| ![Home Page](home-page.png) | ![Products](products.png) | ![Product Details](product-details.png) |
+
+---
+
+## 🌟 Key Features
+
+- 🔐 **Multi-Role Security**: JWT token authentication with role-based access control (`ROLE_ADMIN`, `ROLE_SELLER`, `ROLE_USER`).
+- 🍳 **Home Chef & Seller Management**: Dashboard for publishing dishes, managing inventory, and tracking order updates.
+- 🛒 **Dynamic Shopping Cart & Ordering**: Real-time cart management, dish filtering, and order lifecycle management.
+- ⚡ **High-Performance gRPC Microservice**: Built-in gRPC `ProductService` (`@grpc/grpc-js`) running alongside standard REST APIs.
+- 📧 **Automated Email Service**: Order OTP verification, password resets, and notifications powered by `Nodemailer`.
+- 🖼️ **Cloud Media Storage**: Image upload handling using `Multer` and `Cloudinary`.
+- 🗄️ **Relational Database & Caching**: PostgreSQL schema managed via `Prisma ORM` with `Redis` query caching support.
 
 ---
 
@@ -24,7 +44,7 @@ gruhini-fullstack/
     ├── package.json
     ├── Dockerfile
     ├── prisma/
-    │   └── schema.prisma        # Replicated JPA Entity PostgreSQL Schema
+    │   └── schema.prisma        # Database Models & PostgreSQL Schema
     └── src/
         ├── controllers/         # Auth, User, Cart, Order, Seller, Admin
         ├── grpc/                # gRPC Product Service (@grpc/grpc-js)
@@ -34,9 +54,27 @@ gruhini-fullstack/
 
 ---
 
-## ⚡ STEP 5 — Local Run Instructions
+## 💻 Tech Stack
 
-Follow these exact steps to run the complete full-stack project locally:
+### **Backend**
+- **Runtime**: Node.js, Express, TypeScript
+- **Database & ORM**: PostgreSQL, Prisma ORM
+- **Caching & Sessions**: Redis, `connect-redis`
+- **Microservices**: gRPC (`@grpc/grpc-js`, `@grpc/proto-loader`)
+- **Authentication**: JWT (`jsonwebtoken`), `bcryptjs`
+- **File Uploads & Mailing**: `multer`, `cloudinary`, `nodemailer`
+
+### **Frontend**
+- **Framework**: React 18, Vite, TypeScript
+- **Styling**: Tailwind CSS, PostCSS
+- **Icons & UI Utilities**: Lucide React, `clsx`, `tailwind-merge`
+- **Routing**: React Router DOM
+
+---
+
+## ⚡ Local Setup & Development
+
+Follow these steps to run the complete full-stack project locally:
 
 ### 1. Start Local Infrastructure (PostgreSQL + Redis)
 Ensure Docker Desktop is running, then start the containers:
@@ -46,7 +84,7 @@ docker-compose up -d
 ```
 
 ### 2. Setup & Start Backend (Express + Prisma)
-Open a terminal in the root directory:
+From the project root:
 
 ```bash
 cd backend
@@ -58,7 +96,7 @@ npm run dev
 *The Express REST server will run on `http://localhost:5000` and the gRPC service on `port 50051`.*
 
 ### 3. Setup & Start Frontend (React + Vite)
-Open a separate terminal window:
+In a separate terminal window:
 
 ```bash
 cd frontend
@@ -69,7 +107,35 @@ npm run dev
 
 ---
 
-## 🚀 STEP 6 — Render Production Deployment Guide
+## 🔑 Environment Variables
+
+### Backend (`backend/.env`)
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/gruhini_db"
+PORT=5000
+JWT_SECRET="your_jwt_secret_key"
+REDIS_URL="redis://localhost:6379"
+
+# Cloudinary Credentials
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
+
+# Nodemailer SMTP Configuration
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT=587
+SMTP_USER="your_email@gmail.com"
+SMTP_PASS="your_app_password"
+```
+
+### Frontend (`frontend/.env`)
+```env
+VITE_API_BASE_URL="http://localhost:5000"
+```
+
+---
+
+## 🚀 Production Deployment Guide
 
 ### Option 1: Render Web Service (Backend)
 1. **Repository Link**: Connect your Git repository.
@@ -77,7 +143,7 @@ npm run dev
 3. **Build Command**: `cd backend && npm install && npm run build`
 4. **Start Command**: `cd backend && npm start`
 5. **Environment Variables**:
-   - `DATABASE_URL`: Production PostgreSQL Connection String (Render Postgres)
+   - `DATABASE_URL`: Production PostgreSQL Connection String
    - `JWT_SECRET`: Secure secret string
    - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
    - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
@@ -87,17 +153,3 @@ npm run dev
 2. **Publish Directory**: `frontend/dist`
 3. **Environment Variables**:
    - `VITE_API_BASE_URL`: Set to your deployed Render backend URL (e.g. `https://gruhani-backend.onrender.com`).
-
----
-
-## 🔍 STEP 7 — Conversion Gaps & Substitutions Audit
-
-| Original Spring Boot Feature | Node.js Conversion / Substitution | Rationale / Notes |
-|---|---|---|
-| **Spring Data JPA / Hibernate** | **Prisma ORM (PostgreSQL)** | Directly mapped all models (`Users`, `Seller`, `Product`, `Order`, `Cart`, etc.) with identical field constraints. |
-| **Spring Security Filter Chain** | **Express `jwtAuthMiddleware` + `requireRole`** | Replicated zero-trust JWT token validation and role-based access control (`ROLE_ADMIN`, `ROLE_SELLER`, `ROLE_USER`). |
-| **Spring Mail (`JavaMailSender`)** | **`nodemailer`** | Recreated the exact HTML email templates for order OTPs, password reset, and seller notifications. |
-| **Cloudinary Java SDK** | **`cloudinary` Node SDK + Multer** | Multipart image uploads for product additions and profile picture updates. |
-| **OpenSearch Configuration** | **Prisma Direct Filter & Caching** | OpenSearch client in Spring was unused in core REST path; replaced with fast relational queries & Redis cache support. |
-| **Google Cloud Vision (OCR)** | **Fallback Upload Handler** | Vision API OCR was commented out in Java `image_to_cart.java`; cleanly handled standard image uploads. |
-| **gRPC `product.proto`** | **`@grpc/grpc-js` + `@grpc/proto-loader`** | Runs real gRPC ProductService server alongside standard REST `/explore`. |
