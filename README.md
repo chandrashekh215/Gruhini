@@ -90,14 +90,3 @@ npm run dev
 
 ---
 
-## 🔍 STEP 7 — Conversion Gaps & Substitutions Audit
-
-| Original Spring Boot Feature | Node.js Conversion / Substitution | Rationale / Notes |
-|---|---|---|
-| **Spring Data JPA / Hibernate** | **Prisma ORM (PostgreSQL)** | Directly mapped all models (`Users`, `Seller`, `Product`, `Order`, `Cart`, etc.) with identical field constraints. |
-| **Spring Security Filter Chain** | **Express `jwtAuthMiddleware` + `requireRole`** | Replicated zero-trust JWT token validation and role-based access control (`ROLE_ADMIN`, `ROLE_SELLER`, `ROLE_USER`). |
-| **Spring Mail (`JavaMailSender`)** | **`nodemailer`** | Recreated the exact HTML email templates for order OTPs, password reset, and seller notifications. |
-| **Cloudinary Java SDK** | **`cloudinary` Node SDK + Multer** | Multipart image uploads for product additions and profile picture updates. |
-| **OpenSearch Configuration** | **Prisma Direct Filter & Caching** | OpenSearch client in Spring was unused in core REST path; replaced with fast relational queries & Redis cache support. |
-| **Google Cloud Vision (OCR)** | **Fallback Upload Handler** | Vision API OCR was commented out in Java `image_to_cart.java`; cleanly handled standard image uploads. |
-| **gRPC `product.proto`** | **`@grpc/grpc-js` + `@grpc/proto-loader`** | Runs real gRPC ProductService server alongside standard REST `/explore`. |
